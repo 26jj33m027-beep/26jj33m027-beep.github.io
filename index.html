@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101018">
+  <title>NEON BEAT — Rhythm Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="NEON BEAT 홈"><span class="brand-mark">N</span><span>NEON<span class="accent">BEAT</span></span></a>
+      <div class="top-actions"><span class="status-dot"></span><span>RHYTHM SYSTEM ONLINE</span><button id="settingsBtn" class="icon-btn" title="설정">⚙</button></div>
+    </header>
+
+    <main>
+      <section id="homeScreen" class="screen active">
+        <div class="hero">
+          <div class="eyebrow">FOUR LANES · ONE RHYTHM</div>
+          <h1>FEEL THE<br><span class="gradient-text">BEAT.</span></h1>
+          <p>박자에 맞춰 노트를 입력하고 최고 기록을 갱신하세요.</p>
+          <div class="hero-meta"><span>● ORIGINAL DEMO TRACKS</span><span>● LOCAL RECORDS</span></div>
+        </div>
+        <div class="select-panel">
+          <div class="section-heading"><div><span class="eyebrow">TRACK SELECT</span><h2>곡 선택</h2></div><span class="muted">SELECT YOUR STAGE</span></div>
+          <div id="songList" class="song-list"></div>
+          <div class="play-controls">
+            <label>난이도<select id="difficulty"><option value="easy">EASY</option><option value="normal" selected>NORMAL</option><option value="hard">HARD</option><option value="expert">EXPERT</option></select></label>
+            <label>노트 스킨<select id="skin"><option value="classic">CLASSIC</option><option value="arrows">ARROWS</option><option value="minimal">MINIMAL</option></select></label>
+            <button id="playBtn" class="primary-btn">PLAY <span>▶</span></button>
+          </div>
+          <div class="home-bottom"><button id="editorBtn" class="text-btn">＋ 채보 에디터</button><span id="bestRecord" class="muted">BEST SCORE —</span></div>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="screen">
+        <div class="game-head"><button id="backBtn" class="text-btn">← 나가기</button><div class="track-now"><span class="eyebrow">NOW PLAYING</span><strong id="playingTitle">—</strong></div><div class="score-box"><span>SCORE</span><strong id="score">000000</strong></div></div>
+        <div class="game-stats"><div><span>COMBO</span><strong id="combo">0</strong></div><div><span>ACCURACY</span><strong id="accuracy">100.0%</strong></div><div><span>JUDGEMENT</span><strong id="judgement">READY</strong></div><div class="fever-wrap"><span>FEVER</span><div class="fever-bar"><i id="feverFill"></i></div></div></div>
+        <div class="stage-wrap"><canvas id="gameCanvas" width="960" height="640" aria-label="리듬 게임 플레이 영역"></canvas><div id="countdown" class="countdown">3</div><div id="pauseOverlay" class="overlay hidden"><h2>PAUSED</h2><button id="resumeBtn" class="primary-btn">계속하기</button></div><div id="resultOverlay" class="overlay hidden"><span class="eyebrow">STAGE CLEAR</span><h2 id="resultRank">A RANK</h2><strong id="resultScore">000000</strong><p id="resultAccuracy">정확도 100%</p><button id="retryBtn" class="primary-btn">다시 플레이</button><button id="resultHomeBtn" class="text-btn">곡 선택으로</button></div></div>
+        <div class="game-foot"><span>← ↓ ↑ →</span><span>노트가 판정선에 닿을 때 입력하세요</span><button id="pauseBtn" class="text-btn">Ⅱ 일시정지</button></div>
+      </section>
+
+      <section id="editorScreen" class="screen">
+        <div class="section-heading"><div><span class="eyebrow">CHART WORKSHOP</span><h2>채보 에디터</h2></div><button id="editorBackBtn" class="text-btn">← 돌아가기</button></div>
+        <div class="editor-card"><p>간단한 사용자 채보를 만들 수 있어요. 아래 버튼으로 노트를 추가하고 JSON을 복사해 보관하세요.</p><div class="editor-controls"><label>곡 이름<input id="chartName" value="My Custom Chart" maxlength="40"></label><label>BPM<input id="chartBpm" type="number" min="60" max="240" value="120"></label><label>노트 시간(초)<input id="chartTime" type="number" min="0" step="0.1" value="1"></label><label>레인<select id="chartLane"><option value="0">← LEFT</option><option value="1">↓ DOWN</option><option value="2">↑ UP</option><option value="3">→ RIGHT</option></select></label></div><div class="editor-actions"><button id="addNoteBtn" class="primary-btn">＋ 노트 추가</button><button id="exportChartBtn" class="secondary-btn">JSON 복사</button><button id="clearChartBtn" class="secondary-btn">초기화</button></div><pre id="chartOutput" class="chart-output">[]</pre><p class="muted small">채보는 현재 브라우저에 임시 저장됩니다. 복사한 JSON은 별도로 보관하세요.</p></div>
+      </section>
+
+      <section id="settingsScreen" class="screen">
+        <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h2>설정</h2></div><button id="settingsBackBtn" class="text-btn">← 돌아가기</button></div>
+        <div class="settings-card"><h3>키 바인딩</h3><p class="muted">각 버튼을 누른 뒤 원하는 키를 입력하세요.</p><div id="keySettings" class="key-settings"></div><label class="toggle-row"><span>타격음</span><input id="soundToggle" type="checkbox" checked></label><label class="toggle-row"><span>판정선 효과</span><input id="effectsToggle" type="checkbox" checked></label><button id="resetKeysBtn" class="secondary-btn">기본 키로 초기화</button></div>
+      </section>
+    </main>
+    <footer>NEON BEAT <span>·</span> ORIGINAL RHYTHM GAME PROTOTYPE <span>·</span> v1.0</footer>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
