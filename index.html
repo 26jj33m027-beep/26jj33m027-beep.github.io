@@ -36,8 +36,9 @@
 
       <section id="gameScreen" class="screen">
         <div class="game-head"><button id="backBtn" class="text-btn">← 나가기</button><div class="track-now"><span class="eyebrow">NOW PLAYING</span><strong id="playingTitle">—</strong></div><div class="score-box"><span>SCORE</span><strong id="score">000000</strong></div></div>
-        <div class="game-stats"><div><span>COMBO</span><strong id="combo">0</strong></div><div><span>ACCURACY</span><strong id="accuracy">100.0%</strong></div><div><span>JUDGEMENT</span><strong id="judgement">READY</strong></div><div class="fever-wrap"><span>FEVER</span><div class="fever-bar"><i id="feverFill"></i></div></div></div>
         <div class="stage-wrap"><canvas id="gameCanvas" width="960" height="640" aria-label="리듬 게임 플레이 영역"></canvas><div id="countdown" class="countdown">3</div><div id="pauseOverlay" class="overlay hidden"><h2>PAUSED</h2><button id="resumeBtn" class="primary-btn">계속하기</button></div><div id="resultOverlay" class="overlay hidden"><span class="eyebrow">STAGE CLEAR</span><h2 id="resultRank">A RANK</h2><strong id="resultScore">000000</strong><p id="resultAccuracy">정확도 100%</p><button id="retryBtn" class="primary-btn">다시 플레이</button><button id="resultHomeBtn" class="text-btn">곡 선택으로</button></div></div>
+        <div class="game-stats"><div><span>COMBO</span><strong id="combo">0</strong></div><div><span>ACCURACY</span><strong id="accuracy">100.0%</strong></div><div><span>MISS</span><strong id="missCount">0</strong></div><div><span>JUDGEMENT</span><strong id="judgement">READY</strong></div><div class="fever-wrap"><span>FEVER</span><div class="fever-bar"><i id="feverFill"></i></div></div></div>
+        <div class="health-panel"><span>PLAYER</span><div class="health-bar"><i id="healthFill"></i></div><span>RIVAL</span></div>
         <div class="game-foot"><span>← ↓ ↑ →</span><span>노트가 판정선에 닿을 때 입력하세요</span><button id="pauseBtn" class="text-btn">Ⅱ 일시정지</button></div>
       </section>
 
