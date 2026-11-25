@@ -41,8 +41,8 @@ function beep(freq=520,duration=.055,volume=.04){if(!soundOn)return;ensureAudio(
 function startGame(){
  selectedDifficulty=$('difficulty').value;selectedSkin=$('skin').value;
  const notes=generateChart(selectedSong,selectedDifficulty);
- game={notes,start:performance.now()+3200,paused:false,score:0,combo:0,maxCombo:0,judged:0,perfect:0,good:0,miss:0,fever:0,finished:false,lastBeat:-1};
- $('playingTitle').textContent=selectedSong.title;$('score').textContent='000000';$('combo').textContent='0';$('accuracy').textContent='100.0%';$('judgement').textContent='READY';$('feverFill').style.width='0%';$('resultOverlay').classList.add('hidden');$('pauseOverlay').classList.add('hidden');showScreen('game');$('countdown').classList.add('show');$('countdown').textContent='3';
+ game={notes,start:performance.now()+3200,paused:false,score:0,combo:0,maxCombo:0,judged:0,perfect:0,good:0,miss:0,fever:0,health:50,finished:false,lastBeat:-1};
+ $('playingTitle').textContent=selectedSong.title;$('score').textContent='000000';$('combo').textContent='0';$('accuracy').textContent='100.0%';$('missCount').textContent='0';$('judgement').textContent='READY';$('feverFill').style.width='0%';$('healthFill').style.width='50%';$('resultOverlay').classList.add('hidden');$('pauseOverlay').classList.add('hidden');showScreen('game');$('countdown').classList.add('show');$('countdown').textContent='3';
  setTimeout(()=>{if(!game)return;$('countdown').textContent='2';},1000);setTimeout(()=>{if(!game)return;$('countdown').textContent='1';},2000);setTimeout(()=>{if(!game)return;$('countdown').classList.remove('show');},3000);
  requestAnimationFrame(loop);
 }
@@ -60,12 +60,12 @@ function loop(now){
 function drawStage(ctx,t){
  const w=960,h=640;ctx.clearRect(0,0,w,h);ctx.fillStyle='#10101a';ctx.fillRect(0,0,w,h);
  const grad=ctx.createLinearGradient(0,0,w,h);grad.addColorStop(0,'#1b1c2b');grad.addColorStop(1,'#101018');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
- const left=230,laneW=125,top=0,bottom=575,hitY=500,travel=430,travelTime=2.1;
- ctx.fillStyle='#171724';ctx.fillRect(left,0,laneW*4,bottom);
- for(let i=0;i<4;i++){const x=left+i*laneW;ctx.fillStyle=i%2?'#ffffff06':'#ffffff0b';ctx.fillRect(x,0,laneW,bottom);ctx.strokeStyle='#ffffff18';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,bottom);ctx.stroke();}
+ const left=230,laneW=125,top=55,bottom=590,hitY=135,travel=420,travelTime=2.1;
+ ctx.fillStyle='#171724';ctx.fillRect(left,top,laneW*4,bottom-top);
+ for(let i=0;i<4;i++){const x=left+i*laneW;ctx.fillStyle=i%2?'#ffffff06':'#ffffff0b';ctx.fillRect(x,top,laneW,bottom-top);ctx.strokeStyle='#ffffff18';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();}
  ctx.strokeStyle=selectedSong.color;ctx.lineWidth=3;ctx.shadowColor=selectedSong.color;ctx.shadowBlur=14;ctx.beginPath();ctx.moveTo(left,hitY);ctx.lineTo(left+laneW*4,hitY);ctx.stroke();ctx.shadowBlur=0;
  for(let i=0;i<4;i++){const x=left+i*laneW+laneW/2;ctx.fillStyle='#222333';ctx.fillRect(x-37,hitY-37,74,74);ctx.strokeStyle=selectedSong.color+'99';ctx.lineWidth=2;ctx.strokeRect(x-37,hitY-37,74,74);ctx.fillStyle=selectedSong.color;ctx.font='bold 38px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(selectedSkin==='minimal'?'•':laneSymbols[i],x,hitY);}
- game.notes.forEach(n=>{if(n.hit||n.missed)return;const y=hitY-(n.time-t)*(travel/travelTime);if(y<-40||y>bottom+40)return;const x=left+n.lane*laneW+laneW/2;ctx.shadowColor=selectedSong.color;ctx.shadowBlur=12;ctx.fillStyle=selectedSong.color;ctx.beginPath();if(selectedSkin==='arrows'){ctx.moveTo(x,y-23);ctx.lineTo(x+23,y);ctx.lineTo(x,y+23);ctx.lineTo(x-23,y);ctx.closePath();}else{ctx.roundRect(x-24,y-24,48,48,selectedSkin==='minimal'?24:9);}ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#101018';ctx.font='bold 27px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(laneSymbols[n.lane],x,y+1);});
+ game.notes.forEach(n=>{if(n.hit||n.missed)return;const y=hitY+(n.time-t)*(travel/travelTime);if(y<-40||y>bottom+40)return;const x=left+n.lane*laneW+laneW/2;ctx.shadowColor=selectedSong.color;ctx.shadowBlur=12;ctx.fillStyle=selectedSong.color;ctx.beginPath();if(selectedSkin==='arrows'){ctx.moveTo(x,y-23);ctx.lineTo(x+23,y);ctx.lineTo(x,y+23);ctx.lineTo(x-23,y);ctx.closePath();}else{ctx.roundRect(x-24,y-24,48,48,selectedSkin==='minimal'?24:9);}ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#101018';ctx.font='bold 27px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(laneSymbols[n.lane],x,y+1);});
  ctx.textAlign='left';ctx.fillStyle='#ffffff55';ctx.font='bold 13px Arial';ctx.fillText('NEON BEAT // '+selectedDifficulty.toUpperCase(),28,34);
  ctx.fillStyle='#ffffffaa';ctx.font='12px Arial';ctx.fillText('TIME  '+Math.max(0,t).toFixed(1)+'s / '+selectedSong.length+'s',28,57);
  if(game.fever>=100){ctx.fillStyle='#ff4fa322';ctx.fillRect(left,0,laneW*4,bottom);ctx.fillStyle='#ffe16a';ctx.font='bold 18px Arial';ctx.textAlign='center';ctx.fillText('FEVER!',left+laneW*2,90);}
@@ -76,7 +76,7 @@ function registerJudgement(type){
  else if(type==='GOOD'){game.good++;game.combo++;game.score+=500;game.fever=Math.min(100,game.fever+3);beep(500,.05,.025);}
  else{game.miss++;game.combo=0;game.fever=Math.max(0,game.fever-15);}
  game.maxCombo=Math.max(game.maxCombo,game.combo);
- $('score').textContent=String(game.score).padStart(6,'0');$('combo').textContent=game.combo;$('accuracy').textContent=(((game.perfect+game.good*.7)/Math.max(1,game.judged))*100).toFixed(1)+'%';$('judgement').textContent=type;$('judgement').style.color=type==='MISS'?'#ff4f75':type==='PERFECT'?'#42e8ee':'#ffe16a';$('feverFill').style.width=game.fever+'%';
+ if(type==='PERFECT')game.health=Math.min(100,game.health+2.5);else if(type==='GOOD')game.health=Math.min(100,game.health+1);else game.health=Math.max(0,game.health-8);$('score').textContent=String(game.score).padStart(6,'0');$('combo').textContent=game.combo;$('accuracy').textContent=(((game.perfect+game.good*.7)/Math.max(1,game.judged))*100).toFixed(1)+'%';$('missCount').textContent=game.miss;$('healthFill').style.width=game.health+'%';$('judgement').textContent=type;$('judgement').style.color=type==='MISS'?'#ff4f75':type==='PERFECT'?'#42e8ee':'#ffe16a';$('feverFill').style.width=game.fever+'%';
 }
 function onLane(lane){
  if(!game||game.paused||game.finished)return;
