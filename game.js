@@ -93,7 +93,7 @@ function finishGame(){
  const old=Number(localStorage.getItem(recordKey())||0);if(game.score>old)localStorage.setItem(recordKey(),String(game.score));
  $('resultRank').textContent=rank+' RANK';$('resultScore').textContent=String(game.score).padStart(6,'0');$('resultAccuracy').textContent='정확도 '+acc.toFixed(1)+'% · 최대 콤보 '+game.maxCombo;$('resultOverlay').classList.remove('hidden');updateBest();
 }
-function pauseGame(){if(!game||game.finished)return;game.paused=true;$('pauseOverlay').classList.remove('hidden');}
+function pauseGame(){if(!game||game.finished||game.paused)return;game.elapsed=Math.max(0,(performance.now()-game.start)/1000);game.paused=true;$('pauseOverlay').classList.remove('hidden');}
 function resumeGame(){if(!game)return;game.paused=false;$('pauseOverlay').classList.add('hidden');game.start=performance.now()-(game.elapsed||0)*1000;requestAnimationFrame(loop);}
 function leaveGame(){game=null;showScreen('home');updateBest();}
 window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowDown','ArrowUp','ArrowRight','Space'].includes(e.code))e.preventDefault();if(e.repeat)return;const lane=keys.indexOf(e.code);if(lane!==-1){onLane(lane);return;}if(e.code==='Escape'&&game)pauseGame();});
